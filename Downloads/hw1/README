@@ -1,0 +1,23 @@
+Building
+=========
+
+In the base directory type make
+
+Note:
+  You need a machine with gcc and with the openmp libraries installed!
+
+
+Running
+========
+
+Run the program bsort.  It takes the following parameters
+
+./bsort array_size RAND_SEED nthreads
+
+array_size: the size of the array to allocate and sort
+RAND_SEED: is the seed used for the RNG.
+nthreads: The number of threads to use in sorting
+
+NOTE: If nthreads is 1, then the bubble_sort_serial() function will be used.  If nthreads > 1, then the bubble_sort_parallel() function will be used.
+
+

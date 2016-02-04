@@ -1,0 +1,162 @@
+***********
+Exercise 3
+***********
+
+(1)
+At the point of "0x7c32: movw $PROT_MODE_DSEG, %ax" it starts the 32-bit protected mode. The reason is that the boot loader is going to load the kernel into memory where addresses are above 1 MB.
+
+(2)
+The last instruction of the boot loader is the "((void (*)(void))(ELFHDR->e_entry))();" which is "7d61:	ff 15 18 00 01 00 call   *0x10018" in asm.
+The first instruction of the kernel is "0x10000c:	movw   $0x1234,0x472 ".
+
+(3)
+The first instruction is in 0x10000c.
+
+(4)
+First, infomation for how to copy the kernel from the disk to the memory is restored in the elf header, which is a 4096(0x1000) Bytes block starts from 0x10000 in memory.
+
+The macro define ELFHDR of a elf pointer to 0x10000 helps the bootmain to refer the block of elf header for infomation.
+
+In this memory block:
+
+---------------- 0x10000 ELFHDR
+|
+| elf struct 
+|
+|
+---------------- ELFHDR + ELFHDR->e_phoff
+| program segment (also gives parameters for a call to readseg())
+|
+----------------
+| program segment
+|
+----------------
+|     .
+|     .
+|     .
+---------------- 0x10fff
+
+1. The elf struct contains informations like where the first program segment starts and how many program segments in all. 
+2. Then the readseg() can get the copy information from each program segment, like the offset in disk, the size to copy and the memory address.
+Thus successfully copy the rest of the kernel.
+
+
+
+***********
+Exercise 5
+***********
+
+The first instruction to go wrong is the "0x7c2d:	ljmp   $0x8,$0x7c32" instruction. After a wrong version of this, the next instruction jumps to the start of the BIOS.
+
+
+
+***********
+Exercise 6
+***********
+
+They are different because 0x00100000 is the start address to which those kernel sections are loaded. When BIOS enters the boot loader, kernel hasn't been loaded to this area, so memory above 0x00100000 are all zero. When the boot loader enters the kernel, it has finish the copy, so you can see kernel code here at 0x00100000.
+
+
+***********
+Exercise 7
+***********
+
+The first intruction to fail is the "movl $(bootstacktop),%esp" which means set the stack pointer. And in asm, it is "mov $0xf0110000,%esp", since the virtual address mapping is not set, address above "0x400000" cannot be accessed.
+
+
+***********
+Exercise 8
+***********
+
+in printfmt.c :
+
+case 'o':
+      // Replace this with your code.
+      num = getuint (&ap, lflag);
+      base = 8;
+      goto number;
+
+(1)
+The interface between them is the cputchar(); function.
+This function is used in putch(int ch, int *cnt) in printf.c which did two tasks: first, display the charater on CGA screen and send to the printer; second, increase the count of current character numbers.
+
+(2)
+The purpose of the code is to have the screen to scroll up if it is full (crt_pos >= CRT_SIZE).
+
+(3)
+fmt points to "x %d, y %x, z %d\n" and ap is argument pointer points to each argment on stack.
+
+Since in "x %d, y %x, z %d\n", each non-"%" and non-after-"%" characters will only call cons_putc(c), while "%d" and "%x" will first call va_arg() and then cons_putc(c) for several times depending on the base you choose which may affect the final output result.
+
+Therefore the list of these calls:
+cnt = vcprintf(fmt, ap); 
+cons_putc(c);        c="x"
+cons_putc(c);        c=" "
+cons_putc(c);        c="%"
+va_arg(ap,lflag)     before ap-> x     after ap->y
+cons_putc(c);        c="1"
+cons_putc(c);        c=","
+cons_putc(c);        c=" "
+cons_putc(c);        c="y"
+cons_putc(c);        c=" "
+cons_putc(c);        c="%"
+va_arg(ap,lflag)     before ap-> y     after ap->z
+cons_putc(c);        c="3"
+cons_putc(c);        c=","
+cons_putc(c);        c=" "
+cons_putc(c);        c="z"
+cons_putc(c);        c=" "
+cons_putc(c);        c="%"
+va_arg(ap,lflag)     before ap-> z     after ap-> 1 addr higher than z in stack
+cons_putc(c);        c="4"
+cons_putc(c);        c="\n"
+
+
+
+
+(4)
+The output is "He110 World". First, decimal 57616 to hex is "e110". 
+Second, since 0x00646c72 is saved with little-endian (less sgnificant bit in lower memory), then in memory it saved as 0x72 0x6c 0x64. After each are translated into char, it is "rld". So the result is as above.
+
+(5)
+The output is "x=3 y=-267321364".
+cprintf simply picks up the memory in stack next to 3 (1 address higher) as the value of y.
+
+
+(6)
+
+
+
+
+
+
+***********
+Exercise 9
+***********
+
+It is at "movl	$(bootstacktop),%esp" which is also "f0100034: mov    $0xf0110000,%esp" that the kernel initialize its stack.
+In memory of 0xf0110000 the stack starts.
+
+Since the kernel code takes up memory from 0xf0100000 to 0xf01018b2, the stack area can start from 0xf0110000 and grows up to 0xf01018b3. The kernal reserves this area by having the stack pointer points to the high-address end of the stack and only when the stack pointer decreases, memory below can be accessed.
+
+
+***********
+Exercise 10
+***********
+
+8 words. Between each test_backtrace the stack pointer decrease 0x20, thus there are 32*8 bits, that is 8 32-bit words. 
+
+The memory between the current $esp and the last $esp:
+First word is the return address, the serveral following words are argments and local variables and the finally the old $ebp.
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+Features of UNIX:
+
+(1)Portability: 
+
+The system is written in high-level language making it easier to read, understand, change and, therefore move to other machines. The code can be changed and complied on a new machine. Customers can then choose from a wide variety of hardware vendors without being locked in with a particular vendor. 
+
+(2)Machine-independence: 
+
+The System hides the machine architecture from the user, making it easier to write applications that can run on micros, mins and mainframes. 
+
+(3)Multi-User Operations: 
+
+UNIX is a multi-user system designed to support a group of users simultaneously. The system allows for the sharing of processing power and peripheral resources, white at the same time providing excellent security features. 
+
+(4)Hierarchical File System: 
+
+UNIX uses a hierarchile file structure to store information. This structure has the maximum flexibility in grouping information in a way that reflects its natural state. It allows for easy maintenance and efficient implementation. 
+
+(5)UNIX shell: 
+
+UNIX has a simple user interface called the shell that has the power to provide the services that the user wants. It protects the user from having to know the intricate hardware details. 
+
+(6)Pipes and Filters: 
+
+UNIX has facilities called Pipes and Filters which permit the user to create complex programs from simple programs. 
+
+(7)Utilities: 
+
+UNIX has over 200 utility programs for various functions. New utilities can be built effortlessly by combining existing utilities. 
+
+(8)Software Development Tools: 
+
+UNIX offers an excellent variety of tools for software development for all phases, from program editing to maintenance of software,
+
+(9)Built-in networking (TCP/IP is standard)
+
+
+Don't have features like:
+
+(1)GUI (windows linix and mac OS)
+
+(2)Mac OS X, Time Machine : Data backups
+
+(3)Power management
+
+(4)BeOS, 64-Bit Journaling File System
+which is a database-like file system
+
+(5)Web browsing
+
+
+
+
